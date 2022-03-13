@@ -12,37 +12,45 @@ import React from "react";
 import { RiExternalLinkLine } from "react-icons/ri";
 const sections = [
   {
-    title: "Docs",
+    title: "Social",
     items: [
       {
-        title: "Tutorial",
-        href: "https://docs.strataprotocol.com/getting_started",
+        title: "@STACCArt",
+        href: "https://twitter.com/STACCArt",
       },
     ],
   },
   {
-    title: "Community",
+    title: "DYOR",
     items: [
       {
-        title: "Discord",
-        href: "https://discord.gg/XQhCFg77WM",
+        title: "Github",
+        href: "https://github.com/staccDOTsol",
       },
       {
-        title: "Twitter",
-        href: "https://twitter.com/StrataProtocol",
+        title: "Roadmap",
+        href: "https://hackernoon.com/preview/ecnPaRfyGF5G1lL7sF9N",
+      },
+      {
+        title: "Manifesto",
+        href: "https://hackernoon.com/preview/plldDkBVadTqNWSfLa3l",
+      },
+      {
+        title: "Manifesto: Elaboration",
+        href: "https://hackernoon.com/hehimmaster-of-discovery",
       },
     ],
   },
   {
-    title: "More",
+    title: "Apps",
     items: [
       {
-        title: "Blog",
-        href: "https://www.strataprotocol.com/blog",
+        title: "Social",
+        href: "https://autist.design",
       },
       {
-        title: "GitHub",
-        href: "https://github.com/StrataFoundation/strata",
+        title: "Launchpad",
+        href: "https://dyor.market",
       },
     ],
   },
@@ -77,7 +85,7 @@ export const Footer = () => {
         </Stack>
       </Container>
       <Center textColor="rgba(255, 255, 255, 0.49)" w="full">
-        Copyright © 2022 Strata Foundation.
+        Copyright © 2022 Jare's Crypto and Not Holding Co.
       </Center>
     </VStack>
   );

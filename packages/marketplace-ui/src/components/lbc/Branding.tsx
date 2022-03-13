@@ -10,9 +10,12 @@ export const Branding = () => (
       <Link isExternal href="https://metaplex.com">
         <Image h="9px" alt="Metaplex" src="/metaplex-logo.svg" />
       </Link>
+      <Link isExternal href="https://twitter.com/STACCart">
+        <Image h="9px" alt="Metaplex" src="/jare.png" />
+      </Link>
     </HStack>
     <Text fontSize="14px" color="gray.400">
-      Powered by Strata &amp; Metaplex
+      Powered by Strata &amp; Metaplex, n Jare
     </Text>
   </VStack>
 );

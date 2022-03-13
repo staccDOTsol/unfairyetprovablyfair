@@ -1,7 +1,16 @@
+//  @ts-nocheck
+
 import { BountyCard } from "@/components/bounties/BountyCard";
 import { BountyList } from "@/components/bounties/BountyList";
 import { MintSelectModal } from "@/components/bounties/MintSelectModal";
+import { FormControl } from "@chakra-ui/react";
 import { route, routes } from "@/utils/routes";
+import { Swap, useTokenRefFromBonding } from "@strata-foundation/react";
+import { PublicKey } from "@solana/web3.js";
+import { Token, TOKEN_PROGRAM_ID as TPID } from "@solana/spl-token";
+
+import {Fanout, FanoutClient, FanoutMembershipVoucher, FanoutMint, MembershipModel} from "@glasseaters/hydra-sdk";
+
 import {
   Box,
   Button,
@@ -15,6 +24,7 @@ import {
   Link,
   Select, Spinner, Stack, Text, VStack
 } from "@chakra-ui/react";
+import { useTokenBondingFromMint } from "@strata-foundation/react";
 import {
   useErrorHandler,
   usePublicKey,
@@ -27,9 +37,141 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsChevronDown } from "react-icons/bs";
-
+import {  Connection } from '@solana/web3.js'
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
 const PAGE_SIZE = 20;
 export const Bounties: NextPage = () => {
+ 
+  const connection2 = new Connection('https://solana--mainnet.datahub.figment.io/apikey/24c64e276fc5db6ff73da2f59bac40f2', "confirmed");
+  const wallet = useAnchorWallet()
+  const [shares, setShares] = useState("1.38");
+
+  async function claim(){
+    if (wallet){    let fanoutSdk: FanoutClient;
+      fanoutSdk = new FanoutClient(
+        connection2,
+        // @ts-ignore
+        wallet
+    );
+    const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+   
+    const account = await connection2.getTokenAccountsByOwner(fanout, {
+      mint: mintPublicKey});
+      console.log(account.value[0].pubkey);
+    const fromTokenAccount = account.value[0].pubkey
+  let ix = await fanoutSdk.distributeTokenMemberInstructions(
+    {
+      
+      distributeForMint: true,
+      fanout: fanout,
+      membershipMint: mintPublicKey,
+     // @ts-ignore
+      member: wallet.publicKey,
+      // @ts-ignore
+      payer: wallet.publicKey
+
+    }
+  );
+ let  tx2 = await fanoutSdk.sendInstructions(
+    ix.instructions,
+    [],
+    wallet.publicKey
+  );
+    }
+  }
+  async function claim2(){
+  if (wallet){    let fanoutSdk: FanoutClient;
+    fanoutSdk = new FanoutClient(
+      connection2,
+      // @ts-ignore
+      wallet
+  );
+
+  const account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
+    mint: mintPublicKey2});
+    console.log(account.value[0].pubkey);
+  const fromTokenAccount = account.value[0].pubkey
+  const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+  let ix = await fanoutSdk.distributeTokenMemberInstructions(
+    {
+        distributeForMint: true,
+        fanout: fanout,
+        fanoutMint: mintPublicKey2,
+        membershipMint: mintPublicKey,
+       // @ts-ignore
+        member: wallet.publicKey,
+        // @ts-ignore
+        payer: wallet.publicKey
+
+    }
+);
+let tx2 = await fanoutSdk.sendInstructions(
+    ix.instructions,
+    [],
+    wallet.publicKey
+);
+  }
+}
+  async function doit(){
+
+  if (wallet){
+
+    const account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
+      mint: mintPublicKey});
+      console.log(account.value[0].pubkey.toString());
+    const fromTokenAccount = account.value[0].pubkey
+    let fanoutSdk: FanoutClient;
+    fanoutSdk = new FanoutClient(
+      connection2,
+      // @ts-ignore
+      wallet
+  );
+  const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+  console.log( (parseFloat(shares) * 10 ** 9))
+let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
+        {
+            
+            shares:  (parseFloat(shares) * 10 ** 9),
+            fanout: fanout,
+            membershipMintTokenAccount: fromTokenAccount,
+            membershipMint: mintPublicKey,
+           // @ts-ignore
+            member: wallet.publicKey,
+            // @ts-ignore
+            payer: wallet.publicKey
+        }
+    );const tx = await fanoutSdk.sendInstructions(
+      ixs.instructions,
+      [],
+      // @ts-ignore
+      wallet.publicKey
+  );
+
+}
+  }
+
+  async function us(){
+
+    if (wallet){
+      let fanoutSdk: FanoutClient;
+      fanoutSdk = new FanoutClient(
+        connection2,
+        // @ts-ignore
+        wallet
+    );
+    const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+    
+    await fanoutSdk.unstakeTokenMember({
+      fanout: fanout,
+      // @ts-ignore
+      member: wallet.publicKey,
+      // @ts-ignore
+      payer: wallet.publicKey
+  }
+  );
+    }
+
+  }
   const [mint, setMint] = useQueryString("mint", "");
   const [search, setSearch] = useQueryString("search", "");
   const [sort, setSort] = useQueryString("sort", "newest");
@@ -45,131 +187,98 @@ export const Bounties: NextPage = () => {
     sortDirection: sort.includes("asc") ? "ASC" : "DESC",
     limit
   });
-  const { handleErrors } = useErrorHandler();
+   const { handleErrors } = useErrorHandler();
   handleErrors(error);
-
+async function onChange(e: any){
+  e.preventDefault()
+  console.log(e.target.value)
+  setShares(e.target.value)
+}
   return (
     <Box
-      w="full"
-      backgroundColor="#f9f9f9"
-      minHeight="100vh"
-      paddingBottom="200px"
-    >
-      <Head>
-        <title>Strata Bounties</title>
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta property="og:type" content="website" />
-        <meta
-          name="description"
-          content="Bounties allow users to pool resources to get work done"
-        />
-        <meta property="og:title" content="Strata Bounty Board" />
-        {/* <meta property="og:image" content={} /> */}
-        {/* <meta property="og:description" content={description} /> */}
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Center padding="54px" backgroundColor="black.500">
-        <VStack spacing={6}>
-          <Heading fontWeight={400} color="white" fontSize="24px">
-            Your time gets more{" "}
-            <Box
-              display="inline"
-              background="linear-gradient(to right,#FFCD01, #E17E44);"
-              backgroundClip="text"
-            >
-              valuable
-            </Box>
-          </Heading>
-          <Button
-            w="160px"
-            height="40px"
-            as={Link}
-            href={routes.newBounty.path}
-            colorScheme="orange"
-          >
-            Create
-          </Button>
-        </VStack>
-      </Center>
-      <Container justify="stretch" maxW="container.lg">
-        <VStack pt={16} spacing={8} align="stretch" justify="stretch">
-          <Heading fontWeight={700} color="black.700" fontSize="32px">
-            Recent Bounties
-          </Heading>
-          <Stack direction={["column", "column", "row"]} spacing={2}>
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <Icon color="#718EBF" as={AiOutlineSearch} />
-              </InputLeftElement>
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                borderColor="gray.200"
-                placeholder="Search text, token name, or token symbol"
-              />
-            </InputGroup>
-            <Select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              borderColor="gray.200"
-              w={[null, null, "248px"]}
-              placeholder="Sort by"
-              backgroundColor="white"
-            >
-              <option value="go_live_desc">Most Recent</option>
-              <option value="go_live_asc">Oldest</option>
-              <option value="contribution_asc">
-                Contribution: Low to high
-              </option>
-              <option value="contribution_desc">
-                Contribution: High to low
-              </option>
-            </Select>
-            <MintSelectModal
-              buttonProps={{ backgroundColor: "white" }}
-              onChange={setMint}
-              value={mint}
-            />
-          </Stack>
-          <BountyList>
-            {bounties?.map((bounty) => (
-              <BountyCard
-                onClick={() =>
-                  router.push(
-                    route(routes.bounty, { mintKey: bounty.targetMint.toBase58() })
-                  )
-                }
-                key={bounty.tokenBondingKey.toBase58()}
-                mintKey={bounty.targetMint}
-              />
-            ))}
-            {!loading && bounties?.length === 0 && (
-              <Center w="full" h="350px">
-                <VStack spacing={4}>
-                  <Text color="gray.500" fontWeight={600} fontSize="18px">
-                    Nothing to show...
-                  </Text>
-                  <Text color="gray.400" fontWeight={400} fontSize="16px">
-                    There were no bounties found for these search parameters
-                  </Text>
-                </VStack>
-              </Center>
-            )}
-            {loading && (
-              <Center w="full" h="350px">
-                <Spinner />
-              </Center>
-            )}
-          </BountyList>
-          {bounties?.length == PAGE_SIZE && (
-            <Button onClick={fetchMore} variant="link" colorScheme="orange">
-              See More <Icon ml="6px" w="14px" h="14px" as={BsChevronDown} />
-            </Button>
-          )}
-        </VStack>
-      </Container>
-    </Box>
+    w="full"
+    backgroundColor="#f9f9f9"
+    minHeight="100vh"
+    paddingBottom="200px"
+  >
+    <Head>
+    <title>FAIR</title>
+      <meta name="description" content="Altogether not something @redacted_j would recommend to anyone under any circumstance."     />  
+      
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta property="og:type" content="website" />
+      <meta
+        name="description"
+        content="Altogether not something @redacted_j would recommend to anyone, under any circumstance."
+      />
+      <meta property="og:title" content="FAIR Game" />
+      {/* <meta property="og:image" content={} /> */}
+      {/* <meta property="og:description" content={description} /> */}
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+   
+    <Center padding="54px" backgroundColor="black.500">
+      <VStack spacing={6}>
+        <Box padding="54px" backgroundColor="black.500" />
+
+   
+    <Container mt="-72px" justify="stretch" maxW="460px">
+      <Heading mb={2} color="white" fontSize="24px" fontWeight={600}>
+        Swap
+      </Heading>
+      <Box zIndex={1} bg="white" shadow="xl" rounded="lg" minH="400px">
+        {loading && (
+          <Center>
+            <Spinner />
+          </Center>
+        )}
+        {!loading  && (
+          <div><h2>Hi! There are high fees to buy and sell the FAIR token</h2><div>
+          This incentivizes people to hold, believe it or not. Search &apos;proof of weak hands.&apos;
+          </div>
+          <div>
+            Great! You&apos;ve done your DYOR! Also, @STACCArt.
+          </div>
+          
+          <div>Anywho, all of the royalties for this token go to a Hydra. At any time, perss the below button to see how much revenues you get ;)</div>
+          <div>What this means is that the 40% cumulative fees from buy/sell are given to the hodlers of this token that have staked their supply!</div>
+          
+          <div>Click below to stake :) or claim!</div>
+          <FormControl 
+            
+            > 
+            Shares:
+            <Input type="text" onInput={onChange} value={shares} />
+            <Button type="submit" onClick={doit} >Stake</Button>
+            <Button type="submit" onClick={us} >Unstake All</Button>
+            <Button type="submit" onClick={claim} >CLAIM1</Button>
+            <Button type="submit" onClick={claim2} >CLAIM2</Button>
+
+            </FormControl>
+          <div>if there are 1000 tokens in supply, and only 100 are staked, then only those 100 qualify for payouts. Those paid would earn 10x what they would if all 1000 were staked.</div>
+          <h1>WIP</h1>
+          <div>Hey we are now entangled :) nice</div>
+         
+        <div style={{ width: "400px" }}>
+          {
+          // @ts-ignore
+          !loading && <Swap tokenBondingKey={new PublicKey("7ejJj8PYZLbSxCvdZcSSC5TFBeHg3WNfmZjbB3FL1nPd")} /> }
+        </div>
+    </div>  
+      
+        )}
+      </Box>  
+    </Container>
+       
+      </VStack>
+    </Center>
+   
+  </Box>
   );
 };
 
 export default Bounties;
+
+/*
+
+*/

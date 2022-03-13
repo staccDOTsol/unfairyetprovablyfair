@@ -48,7 +48,7 @@ export const Header: React.FC = () => {
           justifyContent="space-between"
         >
           <Link href="/bounties">
-            <Image alt="Strata Marketplace" src="/logo.svg" />
+            <Image alt="FAIR Game" src="/jare.png" />
           </Link>
           <Box
             display={{ md: "block" }}

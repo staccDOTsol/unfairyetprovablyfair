@@ -15,7 +15,7 @@ import React, { FC, useMemo } from "react";
 
 // export const DEFAULT_ENDPOINT = "https://wumbo.genesysgo.net";
 export const DEFAULT_ENDPOINT =
-  process.env.NEXT_PUBLIC_SOLANA_URL || "https://api.devnet.solana.com";
+  process.env.NEXT_PUBLIC_SOLANA_URL || "https://solana--mainnet.datahub.figment.io/apikey/24c64e276fc5db6ff73da2f59bac40f2";
 
 export const Wallet = ({ children, cluster }: { children: React.ReactNode, cluster?: string }) => {
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --

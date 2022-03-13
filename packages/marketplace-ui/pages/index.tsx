@@ -8,7 +8,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Strata Marketplace</title>
+        <title>FAIR Game</title>
         <meta name="description" content="Marketplace powered by strata protocol" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
