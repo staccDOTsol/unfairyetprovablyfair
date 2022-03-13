@@ -63,9 +63,11 @@ const tokenBonding = new PublicKey("36Lam59eEB8dyGyHNZdNhPhgZCLGDd9Ba1Do6W4SbqPN
     const fromTokenAccount = account.value[0].pubkey
   let ix = await fanoutSdk.distributeTokenMemberInstructions(
     {
+   //   membershipMintTokenAccount: fromTokenAccount,
       
       distributeForMint: true,
       fanout: fanout,
+      fanoutMint: mintPublicKey,
       membershipMint: mintPublicKey,
      // @ts-ignore
       member: wallet.publicKey,
@@ -90,7 +92,7 @@ const tokenBonding = new PublicKey("36Lam59eEB8dyGyHNZdNhPhgZCLGDd9Ba1Do6W4SbqPN
   );
 
   const account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
-    mint: mintPublicKey2});
+    mint: mintPublicKey});
     console.log(account.value[0].pubkey);
   const fromTokenAccount = account.value[0].pubkey
   const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
@@ -99,6 +101,7 @@ const tokenBonding = new PublicKey("36Lam59eEB8dyGyHNZdNhPhgZCLGDd9Ba1Do6W4SbqPN
         distributeForMint: true,
         fanout: fanout,
         fanoutMint: mintPublicKey2,
+   //     membershipMintTokenAccount: fromTokenAccount,
         membershipMint: mintPublicKey,
        // @ts-ignore
         member: wallet.publicKey,
