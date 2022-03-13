@@ -1,4 +1,3 @@
-//  @ts-nocheck
 
 import { BountyCard } from "@/components/bounties/BountyCard";
 import { BountyList } from "@/components/bounties/BountyList";
@@ -41,6 +40,8 @@ import {  Connection } from '@solana/web3.js'
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 const PAGE_SIZE = 20;
 export const Bounties: NextPage = () => {
+ const mintPublicKey = new PublicKey("DLbjx3D65yP7yy4eKSfMFzUgvTfKB9ApTXYunA2NUMtF")
+ const mintPublicKey2 = new PublicKey("BAjRRdbhNWwc1SWWHNHGLGtqS1kDct78qz9oGqGcL6H9")
  
   const connection2 = new Connection('https://solana--mainnet.datahub.figment.io/apikey/24c64e276fc5db6ff73da2f59bac40f2', "confirmed");
   const wallet = useAnchorWallet()
@@ -53,7 +54,7 @@ export const Bounties: NextPage = () => {
         // @ts-ignore
         wallet
     );
-    const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+    const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
    
     const account = await connection2.getTokenAccountsByOwner(fanout, {
       mint: mintPublicKey});
@@ -91,7 +92,7 @@ export const Bounties: NextPage = () => {
     mint: mintPublicKey2});
     console.log(account.value[0].pubkey);
   const fromTokenAccount = account.value[0].pubkey
-  const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+  const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
   let ix = await fanoutSdk.distributeTokenMemberInstructions(
     {
         distributeForMint: true,
@@ -126,7 +127,7 @@ let tx2 = await fanoutSdk.sendInstructions(
       // @ts-ignore
       wallet
   );
-  const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+  const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
   console.log( (parseFloat(shares) * 10 ** 9))
 let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
         {
@@ -159,7 +160,7 @@ let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
         // @ts-ignore
         wallet
     );
-    const fanout = new PublicKey("E7MAiQWdFJTbUGVMp6BwR7ypELR1TUAepw7u6mZKhPZw")
+    const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
     
     await fanoutSdk.unstakeTokenMember({
       fanout: fanout,
