@@ -28,7 +28,8 @@ import { useTokenBondingFromMint } from "@strata-foundation/react";
 import {
   useErrorHandler,
   usePublicKey,
-  useQueryString
+  useQueryString,
+  useStrataSdks
 } from "@strata-foundation/react";
 import { useBounties } from "@/hooks/useBounties";
 import { NextPage } from "next";
@@ -39,35 +40,59 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { BsChevronDown } from "react-icons/bs";
 import {  Connection } from '@solana/web3.js'
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
-const PAGE_SIZE = 20;
-export const Bounties: NextPage = () => {
+var PAGE_SIZE = 20;
+export var Bounties: NextPage = () => {
  
-  const connection2 = new Connection('https://solana--mainnet.datahub.figment.io/apikey/24c64e276fc5db6ff73da2f59bac40f2', "confirmed");
-  const wallet = useAnchorWallet()
-  const [shares, setShares] = useState("1.38");
-  var mintPublicKey =new PublicKey("DLbjx3D65yP7yy4eKSfMFzUgvTfKB9ApTXYunA2NUMtF")  
+  var connection2 = new Connection('https://solana--mainnet.datahub.figment.io/apikey/24c64e276fc5db6ff73da2f59bac40f2', "confirmed");
+  var wallet = useAnchorWallet()
+  var [shares, setShares] = useState("1.38");
+  var mintPublicKey =new PublicKey("7iN3RfreTnGhLCwa2UtpjN3twbMPWmXatXwnQ77CXvYE")  
   var mintPublicKey2 =new PublicKey("BAjRRdbhNWwc1SWWHNHGLGtqS1kDct78qz9oGqGcL6H9")  
-const tokenBonding = new PublicKey("36Lam59eEB8dyGyHNZdNhPhgZCLGDd9Ba1Do6W4SbqPN")
-  async function claim(){
-    if (wallet){    let fanoutSdk: FanoutClient;
+  var mintPublicKey3 =new PublicKey("S9CW6tvmbhT3Eq4E4M42t8aYbRKkY84JQTXTSdErT65")  
+
+  var tokenBonding = new PublicKey("4GNUosViKzHMXAqPmv1Ho7rCdpB9ftyvGxkNNBmuRoyV")
+  var tokenBonding2 = new PublicKey("2UcWAYkpsy1yjkusKHsvGrU9TnwuFKNK5kTtQPr6Ahcs")
+var { tokenCollectiveSdk, tokenBondingSdk } = useStrataSdks()
+/*
+setTimeout(async function(){
+  var ownerTokenRef = new PublicKey("8NkYmPTkWWsfeXD8AXLh5QA1WjJCwyWyLPM9FL2gjGUt")
+  var    buyTargetRoyalties = new PublicKey("291eyZpNwkKWMwNjT1UL8Eqv6tu6kD6TyMtB198nti1U")
+  var    buyBaseRoyalties = new PublicKey("3uTHqsm8yGZahkwTRXgTzt7Q6y1b8k63GDtwsmXyZeWh")
+
+  var { instructions: bondInstrs, signers: bondSigners } =
+  await tokenCollectiveSdk.updateTokenBondingInstructions({
+            tokenRef: ownerTokenRef,
+            buyTargetRoyalties: buyTargetRoyalties,
+              sellTargetRoyalties: buyTargetRoyalties,
+            buyBaseRoyalties: buyBaseRoyalties,
+            sellBaseRoyalties: buyBaseRoyalties,
+                    })
+
+
+                  await tokenBondingSdk.sendInstructions(bondInstrs, bondSigners);
+
+                  });          
+*/
+async function claim(){
+    if (wallet){    var fanoutSdk: FanoutClient;
       fanoutSdk = new FanoutClient(
         connection2,
         // @ts-ignore
         wallet
     );
-    const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
+    var fanout = new PublicKey("A6kmcm1xhNVL3xeU6BJ9ZdAjdsBXDe8sRCpn2hWCQTuC")
    
-    const account = await connection2.getTokenAccountsByOwner(fanout, {
+    var account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
       mint: mintPublicKey});
       console.log(account.value[0].pubkey);
-    const fromTokenAccount = account.value[0].pubkey
-  let ix = await fanoutSdk.distributeTokenMemberInstructions(
+    var fromTokenAccount = account.value[0].pubkey
+  var ix = await fanoutSdk.distributeTokenMemberInstructions(
     {
-   //   membershipMintTokenAccount: fromTokenAccount,
-      
+      membershipMintTokenAccount: fromTokenAccount,
+         
       distributeForMint: true,
       fanout: fanout,
-      fanoutMint: mintPublicKey,
+      fanoutMint: mintPublicKey2,
       membershipMint: mintPublicKey,
      // @ts-ignore
       member: wallet.publicKey,
@@ -76,64 +101,152 @@ const tokenBonding = new PublicKey("36Lam59eEB8dyGyHNZdNhPhgZCLGDd9Ba1Do6W4SbqPN
 
     }
   );
- let  tx2 = await fanoutSdk.sendInstructions(
+ var  tx2 = await fanoutSdk.sendInstructions(
     ix.instructions,
     [],
     wallet.publicKey
   );
+
+  var account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
+    mint: mintPublicKey});
+    console.log(account.value[0].pubkey);
+  var fromTokenAccount = account.value[0].pubkey
+var ix = await fanoutSdk.distributeTokenMemberInstructions(
+  {
+    membershipMintTokenAccount: fromTokenAccount,
+       
+    distributeForMint: true,
+    fanout: fanout,
+    fanoutMint: mintPublicKey3,
+    membershipMint: mintPublicKey,
+   // @ts-ignore
+    member: wallet.publicKey,
+    // @ts-ignore
+    payer: wallet.publicKey
+
+  }
+);
+var  tx2 = await fanoutSdk.sendInstructions(
+  ix.instructions,
+  [],
+  wallet.publicKey
+);
     }
   }
   async function claim2(){
-  if (wallet){    let fanoutSdk: FanoutClient;
-    fanoutSdk = new FanoutClient(
-      connection2,
-      // @ts-ignore
-      wallet
-  );
-
-  const account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
-    mint: mintPublicKey});
-    console.log(account.value[0].pubkey);
-  const fromTokenAccount = account.value[0].pubkey
-  const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
-  let ix = await fanoutSdk.distributeTokenMemberInstructions(
-    {
-        distributeForMint: true,
-        fanout: fanout,
-        fanoutMint: mintPublicKey2,
-   //     membershipMintTokenAccount: fromTokenAccount,
-        membershipMint: mintPublicKey,
-       // @ts-ignore
-        member: wallet.publicKey,
+    if (wallet){    var fanoutSdk: FanoutClient;
+      fanoutSdk = new FanoutClient(
+        connection2,
         // @ts-ignore
-        payer: wallet.publicKey
+        wallet
+    );
+    var fanout = new PublicKey("BXxfTZWg323fqpMUEEE9AQyFXCeYExsfUXPKf7mWo53q")
+   
+    var account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
+      mint: mintPublicKey3});
+      console.log(account.value[0].pubkey);
+    var fromTokenAccount = account.value[0].pubkey
+  var ix = await fanoutSdk.distributeTokenMemberInstructions(
+    {
+   membershipMintTokenAccount: fromTokenAccount,
+      
+      distributeForMint: true,
+      fanout: fanout,
+      fanoutMint: mintPublicKey2,
+      membershipMint: mintPublicKey3,
+     // @ts-ignore
+      member: wallet.publicKey,
+      // @ts-ignore
+      payer: wallet.publicKey
 
     }
-);
-let tx2 = await fanoutSdk.sendInstructions(
+  );
+ var  tx2 = await fanoutSdk.sendInstructions(
     ix.instructions,
     [],
     wallet.publicKey
+  );
+
+  var account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
+    mint: mintPublicKey3});
+    console.log(account.value[0].pubkey);
+  var fromTokenAccount = account.value[0].pubkey
+var ix = await fanoutSdk.distributeTokenMemberInstructions(
+  {
+    membershipMintTokenAccount: fromTokenAccount,
+       
+    distributeForMint: true,
+    fanout: fanout,
+    fanoutMint: mintPublicKey,
+    membershipMint: mintPublicKey3,
+   // @ts-ignore
+    member: wallet.publicKey,
+    // @ts-ignore
+    payer: wallet.publicKey
+
+  }
+);
+var  tx2 = await fanoutSdk.sendInstructions(
+  ix.instructions,
+  [],
+  wallet.publicKey
 );
   }
+}
+async function doit2(){
+
+if (wallet){
+
+  var account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
+    mint: mintPublicKey3});
+    console.log(account.value[0].pubkey.toString());
+  var fromTokenAccount = account.value[0].pubkey
+  var fanoutSdk: FanoutClient;
+  fanoutSdk = new FanoutClient(
+    connection2,
+    // @ts-ignore
+    wallet
+);
+var fanout = new PublicKey("BXxfTZWg323fqpMUEEE9AQyFXCeYExsfUXPKf7mWo53q")
+console.log( (parseFloat(shares) * 10 ** 9))
+var  ixs = await fanoutSdk.stakeTokenMemberInstructions(
+      {
+          
+          shares:  (parseFloat(shares) * 10 ** 9),
+          fanout: fanout,
+          membershipMintTokenAccount: fromTokenAccount,
+          membershipMint: mintPublicKey3,
+         // @ts-ignore
+          member: wallet.publicKey,
+          // @ts-ignore
+          payer: wallet.publicKey
+      }
+  );var tx = await fanoutSdk.sendInstructions(
+    ixs.instructions,
+    [],
+    // @ts-ignore
+    wallet.publicKey
+);
+
+}
 }
   async function doit(){
 
   if (wallet){
 
-    const account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
+    var account = await connection2.getTokenAccountsByOwner(wallet.publicKey, {
       mint: mintPublicKey});
       console.log(account.value[0].pubkey.toString());
-    const fromTokenAccount = account.value[0].pubkey
-    let fanoutSdk: FanoutClient;
+    var fromTokenAccount = account.value[0].pubkey
+    var fanoutSdk: FanoutClient;
     fanoutSdk = new FanoutClient(
       connection2,
       // @ts-ignore
       wallet
   );
-  const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
+  var fanout = new PublicKey("A6kmcm1xhNVL3xeU6BJ9ZdAjdsBXDe8sRCpn2hWCQTuC")
   console.log( (parseFloat(shares) * 10 ** 9))
-let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
+var  ixs = await fanoutSdk.stakeTokenMemberInstructions(
         {
             
             shares:  (parseFloat(shares) * 10 ** 9),
@@ -145,7 +258,7 @@ let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
             // @ts-ignore
             payer: wallet.publicKey
         }
-    );const tx = await fanoutSdk.sendInstructions(
+    );var tx = await fanoutSdk.sendInstructions(
       ixs.instructions,
       [],
       // @ts-ignore
@@ -158,13 +271,13 @@ let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
   async function us(){
 
     if (wallet){
-      let fanoutSdk: FanoutClient;
+      var fanoutSdk: FanoutClient;
       fanoutSdk = new FanoutClient(
         connection2,
         // @ts-ignore
         wallet
     );
-    const fanout = new PublicKey("2DdevS3SFCsuUBAjnhi4krz1GSvDenZfMETaHqWFWUn9")
+    var fanout = new PublicKey("A6kmcm1xhNVL3xeU6BJ9ZdAjdsBXDe8sRCpn2hWCQTuC")
     
     await fanoutSdk.unstakeTokenMember({
       fanout: fanout,
@@ -177,22 +290,45 @@ let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
     }
 
   }
-  const [mint, setMint] = useQueryString("mint", "");
-  const [search, setSearch] = useQueryString("search", "");
-  const [sort, setSort] = useQueryString("sort", "newest");
-  const [limit, setLimit] = useState(PAGE_SIZE);
-  const fetchMore = () => setLimit((limit) => limit + PAGE_SIZE);
-  const router = useRouter();
+
+  async function us2(){
+
+    if (wallet){
+      var fanoutSdk: FanoutClient;
+      fanoutSdk = new FanoutClient(
+        connection2,
+        // @ts-ignore
+        wallet
+    );
+    var fanout = new PublicKey("BXxfTZWg323fqpMUEEE9AQyFXCeYExsfUXPKf7mWo53q")
+    
+    await fanoutSdk.unstakeTokenMember({
+      fanout: fanout,
+      // @ts-ignore
+      member: wallet.publicKey,
+      // @ts-ignore
+      payer: wallet.publicKey
+  }
+  );
+    }
+
+  }
+  var [mint, setMint] = useQueryString("mint", "");
+  var [search, setSearch] = useQueryString("search", "");
+  var [sort, setSort] = useQueryString("sort", "newest");
+  var [limit, setLimit] = useState(PAGE_SIZE);
+  var fetchMore = () => setLimit((limit) => limit + PAGE_SIZE);
+  var router = useRouter();
   
-  const baseMint = usePublicKey(mint);
-  const { result: bounties, error, loading } = useBounties({
+  var baseMint = usePublicKey(mint);
+  var { result: bounties, error, loading } = useBounties({
     baseMint,
     search,
     sortType: sort.includes("contribution") ? "CONTRIBUTION" : "GO_LIVE",
     sortDirection: sort.includes("asc") ? "ASC" : "DESC",
     limit
   });
-  const { handleErrors } = useErrorHandler();
+  var { handleErrors } = useErrorHandler();
   handleErrors(error);
 async function onChange(e: any){
   e.preventDefault()
@@ -254,8 +390,10 @@ async function onChange(e: any){
             > 
             Shares:
             <Input type="text" onInput={onChange} value={shares} />
-            <Button type="submit" onClick={doit} >Stake</Button>
-            <Button type="submit" onClick={us} >Unstake All</Button>
+            <Button type="submit" onClick={doit} >Stake1</Button>
+            <Button type="submit" onClick={us} >Unstake All1</Button>
+            <Button type="submit" onClick={doit2} >Stake2</Button>
+            <Button type="submit" onClick={us2} >Unstake All2</Button>
             <Button type="submit" onClick={claim} >CLAIM1</Button>
             <Button type="submit" onClick={claim2} >CLAIM2</Button>
 
@@ -268,6 +406,9 @@ async function onChange(e: any){
           {
           // @ts-ignore
           !loading && <Swap tokenBondingKey={tokenBonding} /> }
+          {
+          // @ts-ignore
+          !loading && <Swap tokenBondingKey={tokenBonding2} /> }
         </div>
     </div>  
       
