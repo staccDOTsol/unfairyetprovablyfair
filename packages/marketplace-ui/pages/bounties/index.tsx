@@ -1,10 +1,11 @@
+//  @ts-nocheck
 
 import { BountyCard } from "@/components/bounties/BountyCard";
 import { BountyList } from "@/components/bounties/BountyList";
 import { MintSelectModal } from "@/components/bounties/MintSelectModal";
 import { FormControl } from "@chakra-ui/react";
 import { route, routes } from "@/utils/routes";
-import { Swap, useTokenRefFromBonding } from "@strata-foundation/react";
+import { Swap } from "@strata-foundation/react";
 import { PublicKey } from "@solana/web3.js";
 import { Token, TOKEN_PROGRAM_ID as TPID } from "@solana/spl-token";
 
@@ -40,13 +41,13 @@ import {  Connection } from '@solana/web3.js'
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 const PAGE_SIZE = 20;
 export const Bounties: NextPage = () => {
- const mintPublicKey = new PublicKey("DLbjx3D65yP7yy4eKSfMFzUgvTfKB9ApTXYunA2NUMtF")
- const mintPublicKey2 = new PublicKey("BAjRRdbhNWwc1SWWHNHGLGtqS1kDct78qz9oGqGcL6H9")
  
   const connection2 = new Connection('https://solana--mainnet.datahub.figment.io/apikey/24c64e276fc5db6ff73da2f59bac40f2', "confirmed");
   const wallet = useAnchorWallet()
   const [shares, setShares] = useState("1.38");
-
+  var mintPublicKey =new PublicKey("DLbjx3D65yP7yy4eKSfMFzUgvTfKB9ApTXYunA2NUMtF")  
+  var mintPublicKey2 =new PublicKey("BAjRRdbhNWwc1SWWHNHGLGtqS1kDct78qz9oGqGcL6H9")  
+const tokenBonding = new PublicKey("36Lam59eEB8dyGyHNZdNhPhgZCLGDd9Ba1Do6W4SbqPN")
   async function claim(){
     if (wallet){    let fanoutSdk: FanoutClient;
       fanoutSdk = new FanoutClient(
@@ -188,7 +189,7 @@ let  ixs = await fanoutSdk.stakeTokenMemberInstructions(
     sortDirection: sort.includes("asc") ? "ASC" : "DESC",
     limit
   });
-   const { handleErrors } = useErrorHandler();
+  const { handleErrors } = useErrorHandler();
   handleErrors(error);
 async function onChange(e: any){
   e.preventDefault()
@@ -263,7 +264,7 @@ async function onChange(e: any){
         <div style={{ width: "400px" }}>
           {
           // @ts-ignore
-          !loading && <Swap tokenBondingKey={new PublicKey("7ejJj8PYZLbSxCvdZcSSC5TFBeHg3WNfmZjbB3FL1nPd")} /> }
+          !loading && <Swap tokenBondingKey={tokenBonding} /> }
         </div>
     </div>  
       
