@@ -28,6 +28,7 @@
     "@glasseaters/hydra-sdk": "^0.1.0",
     "@hookform/resolvers": "^2.8.8",
     "@metaplex-foundation/mpl-token-metadata": "^1.1.0",
+    "@metaplex/js": "^4.12.0",
     "@sevenoutman/use-debounced-memo": "^1.0.0",
     "@solana/spl-governance": "^0.0.26",
     "@solana/spl-token": "^0.1.8",

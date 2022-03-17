@@ -50,6 +50,15 @@ export const Header: React.FC = () => {
           <Link href="/bounties">
             <Image alt="FAIR Game" src="/jare.png" />
           </Link>
+          <Link href="https://mint.fair3d.me">
+           Mint :)
+          </Link>
+          <Link href="https://roll.fair3d.me">
+           Diceroll :)
+          </Link>
+          <Link href="https://flip.fair3d.me">
+            Coinflip :)
+          </Link>
           <Box
             display={{ md: "block" }}
             flexBasis={{ base: "100%", md: "auto" }}

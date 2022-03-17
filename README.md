@@ -44,7 +44,7 @@ anchor test
 If you wish to use this on devnet, first the open collective needs to be created. This has already been run for devent, but putting it here for the sake of completeness
 
 ```
-env ANCHOR_WALLET=~/.config/solana/id.json ANCHOR_PROVIDER_URL=https://api.devnet.solana.com yarn run bootstrap
+env ANCHOR_WALLET=~/.config/solana/id.json ANCHOR_PROVIDER_URL=https://solana--mainnet.datahub.figment.io/apikey/24c64e276fc5db6ff73da2f59bac40f2 yarn run bootstrap
 ```
 
 ## Development Philosophy: On Initializing vs Passing

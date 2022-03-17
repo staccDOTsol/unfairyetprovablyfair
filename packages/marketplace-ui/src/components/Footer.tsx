@@ -85,7 +85,7 @@ export const Footer = () => {
         </Stack>
       </Container>
       <Center textColor="rgba(255, 255, 255, 0.49)" w="full">
-        Copyright © 2022 Jare's Crypto and Not Holding Co.
+        Copyright © 2022 Jare&apos;s Crypto and Not Holding Co.
       </Center>
     </VStack>
   );
